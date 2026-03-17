@@ -19,7 +19,8 @@ start:
 		call choose_mode
 
 ;-------------------------------------------------------------------------
-;we want to work with videosegment, so 'es' and 'bx' is to be adjusted
+;we want to work with videosegment, so 	segment is to be in 'es', offset 
+;is to be in 'bx'. So the function destroys changes 'es', 'bx'
 ;-------------------------------------------------------------------------
 
 		setup_video:						; we are on the video_seg now		
@@ -30,6 +31,7 @@ start:
 
 ;-------------------------------------------------------------------------
 ;to correctly draw the frame(in the first mode), we are to know the len
+;the result: len of the string is in LEN, 'bx' = 0
 ;-------------------------------------------------------------------------
 
 		find_len:							; put len of the line in LEN(80h - is the address)
@@ -42,6 +44,7 @@ start:
 ;if we put : "myvideo.com 1 'string'", then 'string' will be written in the 
 ;frame. If we put : "myvideo.com 2(or any number)", we will be given op -
 ;portunity to put 13 symbols in the given frame.
+;Function works with : ax, bx, cx, di, es. Their values are lost
 ;-------------------------------------------------------------------------
 
 		choose_mode:	
@@ -54,7 +57,7 @@ start:
 		je input_textk 	
 		jmp input_done				
 
-		input_textc:
+			input_textc:
 		call draw_frame
 		mov bx, MIDDLE_OF_SCREEN			;we are writing in the middle
 
@@ -71,7 +74,7 @@ start:
 		jmp input_done						;just terminates the programm
 
 
-		input_textk:
+			input_textk:
 		mov LEN, 15
 		call draw_frame		
 		xor ax, ax
@@ -101,7 +104,7 @@ start:
 
 		jmp not_yet
 
-		back_space:
+			back_space:
 		cmp bx, MIDDLE_OF_SCREEN					;if we can't errase symbols - skip
 		je skip
 		sub bx, 2									; set bx on the current pose
@@ -113,14 +116,15 @@ start:
 		jmp not_yet
 
 
-		not_yet:									;we are not done, until 'enter' or 13 symbols
+			not_yet:									;we are not done, until 'enter' or 13 symbols
 		loop textk
 		
-		input_done:									;we just terminate programm
+			input_done:									;we just terminate programm
 		jmp programm_exit		
 ;-------------------------------------------------------------------------
 ;Line after line we are drawing frame and then putting symbols into it
-;		
+;function works with bx, cx, bur they are being saved in stack every time
+;so nothing is destroyed.
 ;-------------------------------------------------------------------------
 		
 		draw_frame:
@@ -135,7 +139,7 @@ start:
 		pop bx
 		ret
 		
-		top_line:
+			top_line:
 		push cx
 		push bx
 
@@ -158,14 +162,14 @@ start:
 		pop cx
 		ret
 		
-		middle_part:
+			middle_part:
 		push cx
 		push bx
 		
 		add bx, NEXT_LINE							; second line of the frame
 	
 		mov cx, 6									; amount of middle lines
-		sides:
+			sides:
 		mov byte ptr es: [bx], 0b3h					; vertical line
 		mov byte ptr es: [bx+1], 1fh    			; white on blue
 		mov dx, LEN
@@ -182,7 +186,7 @@ start:
 		pop cx
 		ret
 		
-		bottom_line:
+			bottom_line:
 		push cx
 		push bx
 		add bx, LEFT_BOTTOM
@@ -209,7 +213,7 @@ start:
 
 
 	
-		programm_exit:
+			programm_exit:
 		mov ax, 4c00h
 		int 21h
 .data 
