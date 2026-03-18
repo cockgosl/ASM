@@ -9,7 +9,9 @@ START:
         mov bx ,dx
         mov byte ptr [bx], 150
 
-        call FILL
+        mov ah, 0ah 
+        int 21h
+        
         call COMPARE
         jmp END_OF_PROGRAMM
 
@@ -19,12 +21,6 @@ MEOW:
 miuw    db 'you god dame right', '$'
 Mewq    db 'get out!!', '$'
 COUNTER dw 0
-
-        FILL:
-        xor ax, ax
-        mov ah, 0ah 
-        int 21h
-        ret
 
         COMPARE:
         mov di, 1
