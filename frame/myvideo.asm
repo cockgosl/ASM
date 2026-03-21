@@ -153,14 +153,14 @@ start:
 			
 		mov cx, LEN									;amountt of top lines
 		sub cx, 2
-		top:
-		mov byte ptr es: [bx], 	0C4h				; horizontal line
-		mov byte ptr es: [bx+1], 1fh				; white on blue
-		add bx, 2	
-		loop top
+		mov ah, 1fh							; horizontal line
+		mov al, 0c4h									; white on blue
+		mov di, bx									
 
-		mov byte ptr es: [bx], 0bbh					; right_cornerup
-		mov byte ptr es: [bx+1], 29h				; blue on green
+		rep stosw
+
+		mov byte ptr es: [di], 0bbh					; right_cornerup
+		mov byte ptr es: [di+1], 29h				; blue on green
 		
 		pop bx
 		pop cx
@@ -199,16 +199,16 @@ start:
 		mov byte ptr es: [bx+1], 29h				; blue on green
 		add bx, 2
 
-		mov cx, LEN
-		sub cx, 2									; amount of bottom lines
-		bottom:		
-		mov byte ptr es: [bx], 0c4h					; horizontal line
-		mov byte ptr es: [bx+1], 1fh				; white on blue
-		add bx, 2
-		loop bottom
+		mov cx, LEN									;amountt of top lines
+		sub cx, 2
+		mov ah, 1fh								; horizontal line
+		mov al, 0c4h									; white on blue
+		mov di, bx									
+
+		rep stosw
 		
-		mov byte ptr es: [bx], 0bch					; right_cornerdown
-		mov byte ptr es: [bx+1], 29h				; blue on green
+		mov byte ptr es: [di], 0bch					; right_cornerdown
+		mov byte ptr es: [di+1], 29h				; blue on green
 	
 		pop bx
 		pop cx
