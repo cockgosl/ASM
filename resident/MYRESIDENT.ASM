@@ -26,7 +26,7 @@ Start:
 
 			
 		mov bx, 1ch * 4
-		mov es:[bx], offset NEW_1c			;we put the address of our new function in the table of interrupts handler 
+		mov es:[bx], offset NEW_1c		;we put the address of our new function in the table of interrupts handler 
 		mov ax, cs
 		mov es:[bx+2], ax
 		
@@ -50,13 +50,13 @@ Start:
 regname_arr db 97, 120 , 98, 120, 99, 120, 100, 120, 115, 105, 100, 105, 98, 112, 100, 115, 101, 115, 115, 115		;ASCI codes of ax, bx, cx...
 reg_arr dw 10 dup(0)
 DRAW_SIGN db 0
-DRAW_BLOCK db 0
+DRAW_BLOCK db 0	
 COUNTER db 0
 
 ;------------------------------------------------------------------;
 ;New function is made to controll current state of registers. Every;
 ;18ms we check them and if needed put them in the frame(if shift is;
-;pressed). The sign of it is stored in DRAW_SIGN. 		   ;
+;pressed). The sign of it is stored in DRAW_SIGN. 		           ;
 ;------------------------------------------------------------------;
 
 
@@ -83,7 +83,8 @@ NEW_1c		proc
 		
 
 
-		call DRAW
+		call DRAW						;вывести в другое место рамку, ip выводить
+										; без flickeringa , чтобы при спаме shift не было такого
 
 		standart2:
 
@@ -107,7 +108,7 @@ NEW_1c		proc
 NEW_1c endp
 ;---------------------------------------------------------------------;
 ;This function works with the array, wich contains registers. It draws;
-;in a text mode.					              ;
+;in a text mode.					              					  ;
 ;---------------------------------------------------------------------;
 
 DRAW		proc
@@ -118,8 +119,16 @@ DRAW		proc
 		push 0b800h								;videosegment
 		pop es
 		xor bx, bx
-
+;---------------------------------------------------------------------;
+;we draw blue background in the upper left corner of the screen		  ;
+;---------------------------------------------------------------------;
 		call BACKGROUND
+;---------------------------------------------------------------------;
+;this function prints registers with their value on the screen. It 	  ;
+;works with 2 arrays: one is with registers value(reg_arr), the other ;
+;is with their names(regname_arr(it is made just to write them in a   ;
+;loop).		  														  ;
+;---------------------------------------------------------------------;
 		call PRINTF
 
 		STOP:
@@ -134,10 +143,10 @@ DRAW		proc
 		mov cx, 4
 		mov di, 6
 
-		CONVERT:
+		CONVERT:							
 		rol ax, 4	
 		mov dl, al
-		and dl, 0Fh	
+		and dl, 0Fh							;everything but the lowest byte in dl is 0
 	
 		cmp dl, 9
 		jbe DIGIT
@@ -151,7 +160,7 @@ DRAW		proc
 		add di, 2
 		loop CONVERT					
 			
-		add bx, 160					
+		add bx, 160							;we go on the next line
 		ret									
 
 		PRINTF:
