@@ -23,7 +23,8 @@ start:
 ;is to be in 'bx'. So the function destroys changes 'es', 'bx'
 ;-------------------------------------------------------------------------
 
-		setup_video:						; we are on the video_seg now		
+		setup_video:						; we are on the video_seg now	
+			
 		mov bx, VIDEO_SEG
 		mov es, bx
 		mov bx, 0
@@ -35,6 +36,7 @@ start:
 ;-------------------------------------------------------------------------
 
 		find_len:							; put len of the line in LEN(80h - is the address)
+
 		mov bl, ds:[80h]
 		mov LEN, bx
 		xor bx, bx
@@ -47,7 +49,8 @@ start:
 ;Function works with : ax, bx, cx, di, es. Their values are lost
 ;-------------------------------------------------------------------------
 
-		choose_mode:	
+		choose_mode:
+
 		cmp LEN, 2
 		jb input_done_p					
 		mov al, ds:[82h]					
@@ -128,6 +131,7 @@ start:
 ;-------------------------------------------------------------------------
 		
 		draw_frame:
+
 		push bx
 		
 		add bx, TOP_MIDDLE
@@ -169,7 +173,7 @@ start:
 		add bx, NEXT_LINE							; second line of the frame
 	
 		mov cx, 6									; amount of middle lines
-	sides:
+		sides:
 		mov byte ptr es: [bx], 0b3h					; vertical line
 		mov byte ptr es: [bx+1], 1fh    			; white on blue
 		mov dx, LEN
