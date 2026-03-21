@@ -57,7 +57,7 @@ start:
 		je input_textk 	
 		jmp input_done				
 
-			input_textc:
+	input_textc:
 		call draw_frame
 		mov bx, MIDDLE_OF_SCREEN			;we are writing in the middle
 
@@ -74,7 +74,7 @@ start:
 		jmp input_done						;just terminates the programm
 
 
-			input_textk:
+	input_textk:
 		mov LEN, 15
 		call draw_frame		
 		xor ax, ax
@@ -104,7 +104,7 @@ start:
 
 		jmp not_yet
 
-			back_space:
+	back_space:
 		cmp bx, MIDDLE_OF_SCREEN					;if we can't errase symbols - skip
 		je skip
 		sub bx, 2									; set bx on the current pose
@@ -116,10 +116,10 @@ start:
 		jmp not_yet
 
 
-			not_yet:									;we are not done, until 'enter' or 13 symbols
+	not_yet:									;we are not done, until 'enter' or 13 symbols
 		loop textk
 		
-			input_done:									;we just terminate programm
+	input_done:									;we just terminate programm
 		jmp programm_exit		
 ;-------------------------------------------------------------------------
 ;Line after line we are drawing frame and then putting symbols into it
@@ -139,7 +139,7 @@ start:
 		pop bx
 		ret
 		
-			top_line:
+	top_line:
 		push cx
 		push bx
 
@@ -162,14 +162,14 @@ start:
 		pop cx
 		ret
 		
-			middle_part:
+	middle_part:
 		push cx
 		push bx
 		
 		add bx, NEXT_LINE							; second line of the frame
 	
 		mov cx, 6									; amount of middle lines
-			sides:
+	sides:
 		mov byte ptr es: [bx], 0b3h					; vertical line
 		mov byte ptr es: [bx+1], 1fh    			; white on blue
 		mov dx, LEN
@@ -186,7 +186,7 @@ start:
 		pop cx
 		ret
 		
-			bottom_line:
+	bottom_line:
 		push cx
 		push bx
 		add bx, LEFT_BOTTOM
@@ -213,7 +213,7 @@ start:
 
 
 	
-			programm_exit:
+	programm_exit:
 		mov ax, 4c00h
 		int 21h
 .data 
