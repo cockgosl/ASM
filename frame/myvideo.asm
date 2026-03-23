@@ -157,7 +157,7 @@ start:
 		mov al, 0c4h									; white on blue
 		mov di, bx									
 
-		rep stosw
+		rep stosw							;great string function
 
 		mov byte ptr es: [di], 0bbh					; right_cornerup
 		mov byte ptr es: [di+1], 29h				; blue on green
