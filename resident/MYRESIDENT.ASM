@@ -47,6 +47,7 @@ Start:
 
 
 
+RIGHT_CORNER equ 138 
 regname_arr db 97, 120 , 98, 120, 99, 120, 100, 120, 115, 105, 100, 105, 98, 112, 100, 115, 101, 115, 115, 115		;ASCI codes of ax, bx, cx...
 reg_arr dw 10 dup(0)
 DRAW_SIGN db 0
@@ -83,8 +84,7 @@ NEW_1c		proc
 		
 
 
-		call DRAW						;вывести в другое место рамку, ip выводить
-										; без flickeringa , чтобы при спаме shift не было такого
+		call DRAW
 
 		standart2:
 
@@ -118,7 +118,7 @@ DRAW		proc
 
 		push 0b800h								;videosegment
 		pop es
-		xor bx, bx
+		mov bx, RIGHT_CORNER
 ;---------------------------------------------------------------------;
 ;we draw blue background in the upper left corner of the screen		  ;
 ;---------------------------------------------------------------------;
@@ -193,6 +193,7 @@ DRAW		proc
 		ret
 
 		BACKGROUND:
+		push bx
 		mov cx, 11
 		mov di, 12
 
@@ -205,7 +206,7 @@ DRAW		proc
 		dec di
 		cmp di, 0
 		jne BACK_LOOP
-		xor bx, bx
+		pop bx
 		ret
 DRAW endp
 ;---------------------------------------------------------------------;
