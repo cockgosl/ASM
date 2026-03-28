@@ -47,9 +47,9 @@ Start:
 
 
 
-RIGHT_CORNER equ 138 
-regname_arr db 97, 120 , 98, 120, 99, 120, 100, 120, 115, 105, 100, 105, 98, 112, 100, 115, 101, 115, 115, 115		;ASCI codes of ax, bx, cx...
-reg_arr dw 10 dup(0)
+RIGHT_CORNER equ 306
+regname_arr db 97, 120 , 98, 120, 99, 120, 100, 120, 115, 105, 100, 105, 98, 112, 100, 115, 101, 115, 115, 115, 105, 112		;ASCI codes of ax, bx, cx...
+reg_arr dw 11 dup(0)
 DRAW_SIGN db 0
 DRAW_BLOCK db 0	
 COUNTER db 0
@@ -62,6 +62,14 @@ COUNTER db 0
 
 
 NEW_1c		proc
+		push cx
+		push bp
+		mov bp, sp
+		mov cx, cs:[bp+2] 
+		mov cs:[reg_arr+20], cx				;saving ip
+		pop bp
+		pop cx
+											;push cs:[reg_arr+20]
 		
 		cmp cs:COUNTER, 18
 		je SKIP
@@ -84,7 +92,7 @@ NEW_1c		proc
 		
 
 
-		call DRAW
+		call DRAW						;вывести в другое место рамку, ip выводить	; без flickeringa , чтобы при спаме shift не было такого
 
 		standart2:
 
@@ -166,7 +174,7 @@ DRAW		proc
 		PRINTF:
 
 		mov di , 0
-		mov cx, 10
+		mov cx, 11
 
 		PRINTF_F:
 		push cx
@@ -194,15 +202,15 @@ DRAW		proc
 
 		BACKGROUND:
 		push bx
-		mov cx, 11
-		mov di, 12
+		mov cx, 7
+		mov di, 11
 
 		BACK_LOOP:
 		mov byte ptr es:[bx+1], 30h
 		add bx, 2
 		loop BACK_LOOP
-		add cx, 11
-		add bx, 138
+		add cx, 7
+		add bx, 146
 		dec di
 		cmp di, 0
 		jne BACK_LOOP
@@ -216,6 +224,14 @@ DRAW endp
 ;frame								      ;
 ;---------------------------------------------------------------------;
 NEW_09		proc
+		push cx
+		push bp
+		mov bp, sp
+		mov cx, cs:[bp+4] 
+		mov cs:[reg_arr+20], cx				;saving ip
+		pop bp
+		pop cx
+		
 
 		mov cs:[reg_arr+0], ax			;1) safe registers in an array
 		mov cs:[reg_arr+2], bx
